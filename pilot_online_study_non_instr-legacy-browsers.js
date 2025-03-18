@@ -123,9 +123,15 @@ flowScheduler.add(trials_testAudioLoopEnd);
 
 
 
-flowScheduler.add(end_screenRoutineBegin());
-flowScheduler.add(end_screenRoutineEachFrame());
-flowScheduler.add(end_screenRoutineEnd());
+flowScheduler.add(send_expt_dataRoutineBegin());
+flowScheduler.add(send_expt_dataRoutineEachFrame());
+flowScheduler.add(send_expt_dataRoutineEnd());
+flowScheduler.add(click_redirectRoutineBegin());
+flowScheduler.add(click_redirectRoutineEachFrame());
+flowScheduler.add(click_redirectRoutineEnd());
+flowScheduler.add(end_scrapRoutineBegin());
+flowScheduler.add(end_scrapRoutineEachFrame());
+flowScheduler.add(end_scrapRoutineEnd());
 flowScheduler.add(quitPsychoJS, '', true);
 
 // quit if user presses Cancel in dialog box:
@@ -283,8 +289,13 @@ var button_attention_5;
 var text_beepNumber;
 var mouse_attentionChoice;
 var test_attention_resetClock;
-var end_screenClock;
-var text_endMessage;
+var send_expt_dataClock;
+var click_redirectClock;
+var text_dataWait;
+var text_redirectPrompt;
+var button_redirectClick;
+var end_scrapClock;
+var text_endScrap;
 var globalClock;
 var routineTimer;
 async function experimentInit() {
@@ -1365,12 +1376,55 @@ async function experimentInit() {
   button_attention_3.numClicks = 0;
   button_attention_4.numClicks = 0;
   button_attention_5.numClicks = 0;
-  // Initialize components for Routine "end_screen"
-  end_screenClock = new util.Clock();
-  text_endMessage = new visual.TextStim({
+  // Initialize components for Routine "send_expt_data"
+  send_expt_dataClock = new util.Clock();
+  // Initialize components for Routine "click_redirect"
+  click_redirectClock = new util.Clock();
+  text_dataWait = new visual.TextStim({
     win: psychoJS.window,
-    name: 'text_endMessage',
-    text: 'You have now completed the study. Thank you for participating!\n\nYou will now be redirected to the Prolific study page to complete your submission.',
+    name: 'text_dataWait',
+    text: 'Sending data... Please wait.',
+    font: 'Arial',
+    units: undefined, 
+    pos: [0, 0], height: 0.05,  wrapWidth: undefined, ori: 0.0,
+    languageStyle: 'LTR',
+    color: new util.Color('white'),  opacity: undefined,
+    depth: 0.0 
+  });
+  
+  text_redirectPrompt = new visual.TextStim({
+    win: psychoJS.window,
+    name: 'text_redirectPrompt',
+    text: 'You have now completed the study. Thank you for participating!\n\nPlease click the button to be redirected to the Prolific study page to finish your submission.',
+    font: 'Arial',
+    units: undefined, 
+    pos: [0, 0.15], height: 0.05,  wrapWidth: undefined, ori: 0.0,
+    languageStyle: 'LTR',
+    color: new util.Color('white'),  opacity: undefined,
+    depth: -1.0 
+  });
+  
+  button_redirectClick = new visual.ButtonStim({
+    win: psychoJS.window,
+    name: 'button_redirectClick',
+    text: 'Click here',
+    fillColor: 'darkgrey',
+    borderColor: null,
+    color: 'white',
+    colorSpace: 'rgb',
+    pos: [0, (- 0.15)],
+    letterHeight: 0.05,
+    size: [0.5, 0.5],
+    depth: -2
+  });
+  button_redirectClick.clock = new util.Clock();
+  
+  // Initialize components for Routine "end_scrap"
+  end_scrapClock = new util.Clock();
+  text_endScrap = new visual.TextStim({
+    win: psychoJS.window,
+    name: 'text_endScrap',
+    text: 'This is placeholder text (should not be visible to participants).',
     font: 'Arial',
     units: undefined, 
     pos: [0, 0], height: 0.05,  wrapWidth: undefined, ori: 0.0,
@@ -6616,19 +6670,18 @@ function test_attention_resetRoutineEnd(snapshot) {
 
 
 var experimentComplete;
-var end_screenComponents;
-function end_screenRoutineBegin(snapshot) {
+var send_expt_dataComponents;
+function send_expt_dataRoutineBegin(snapshot) {
   return async function () {
     TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
     
-    //--- Prepare to start Routine 'end_screen' ---
+    //--- Prepare to start Routine 'send_expt_data' ---
     t = 0;
-    end_screenClock.reset(); // clock
+    send_expt_dataClock.reset(); // clock
     frameN = -1;
     continueRoutine = true; // until we're told otherwise
-    routineTimer.add(5.000000);
     // update component parameters for each repeat
-    psychoJS.experiment.addData('end_screen.started', globalClock.getTime());
+    psychoJS.experiment.addData('send_expt_data.started', globalClock.getTime());
     experimentComplete = true;
     
     function flattenObject(obj, prefix = '') {
@@ -6708,20 +6761,15 @@ function end_screenRoutineBegin(snapshot) {
       .then(data => {
           // Log response
           console.log('Response from server:', data);
-    
-          // Redirect to the chosen URL
-          console.log('Redirecting...');
-          window.location.href = 'https://app.prolific.com/submissions/complete?cc=CPRPTY9P'; // Okay to use same code as for odd-harmonics version
       })
       .catch(error => {
           // Handle any errors
           console.error('Error sending data:', error);
       });
     // keep track of which components have finished
-    end_screenComponents = [];
-    end_screenComponents.push(text_endMessage);
+    send_expt_dataComponents = [];
     
-    end_screenComponents.forEach( function(thisComponent) {
+    send_expt_dataComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent)
         thisComponent.status = PsychoJS.Status.NOT_STARTED;
        });
@@ -6730,26 +6778,250 @@ function end_screenRoutineBegin(snapshot) {
 }
 
 
-function end_screenRoutineEachFrame() {
+function send_expt_dataRoutineEachFrame() {
   return async function () {
-    //--- Loop for each frame of Routine 'end_screen' ---
+    //--- Loop for each frame of Routine 'send_expt_data' ---
     // get current time
-    t = end_screenClock.getTime();
+    t = send_expt_dataClock.getTime();
+    frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    // update/draw components on each frame
+    // check for quit (typically the Esc key)
+    if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
+      return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
+    }
+    
+    // check if the Routine should terminate
+    if (!continueRoutine) {  // a component has requested a forced-end of Routine
+      return Scheduler.Event.NEXT;
+    }
+    
+    continueRoutine = false;  // reverts to True if at least one component still running
+    send_expt_dataComponents.forEach( function(thisComponent) {
+      if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
+        continueRoutine = true;
+      }
+    });
+    
+    // refresh the screen if continuing
+    if (continueRoutine) {
+      return Scheduler.Event.FLIP_REPEAT;
+    } else {
+      return Scheduler.Event.NEXT;
+    }
+  };
+}
+
+
+function send_expt_dataRoutineEnd(snapshot) {
+  return async function () {
+    //--- Ending Routine 'send_expt_data' ---
+    send_expt_dataComponents.forEach( function(thisComponent) {
+      if (typeof thisComponent.setAutoDraw === 'function') {
+        thisComponent.setAutoDraw(false);
+      }
+    });
+    psychoJS.experiment.addData('send_expt_data.stopped', globalClock.getTime());
+    // the Routine "send_expt_data" was not non-slip safe, so reset the non-slip timer
+    routineTimer.reset();
+    
+    // Routines running outside a loop should always advance the datafile row
+    if (currentLoop === psychoJS.experiment) {
+      psychoJS.experiment.nextEntry(snapshot);
+    }
+    return Scheduler.Event.NEXT;
+  }
+}
+
+
+var click_redirectComponents;
+function click_redirectRoutineBegin(snapshot) {
+  return async function () {
+    TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
+    
+    //--- Prepare to start Routine 'click_redirect' ---
+    t = 0;
+    click_redirectClock.reset(); // clock
+    frameN = -1;
+    continueRoutine = true; // until we're told otherwise
+    // update component parameters for each repeat
+    psychoJS.experiment.addData('click_redirect.started', globalClock.getTime());
+    // reset button_redirectClick to account for continued clicks & clear times on/off
+    button_redirectClick.reset()
+    // keep track of which components have finished
+    click_redirectComponents = [];
+    click_redirectComponents.push(text_dataWait);
+    click_redirectComponents.push(text_redirectPrompt);
+    click_redirectComponents.push(button_redirectClick);
+    
+    click_redirectComponents.forEach( function(thisComponent) {
+      if ('status' in thisComponent)
+        thisComponent.status = PsychoJS.Status.NOT_STARTED;
+       });
+    return Scheduler.Event.NEXT;
+  }
+}
+
+
+function click_redirectRoutineEachFrame() {
+  return async function () {
+    //--- Loop for each frame of Routine 'click_redirect' ---
+    // get current time
+    t = click_redirectClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
     
-    // *text_endMessage* updates
-    if (t >= 0.0 && text_endMessage.status === PsychoJS.Status.NOT_STARTED) {
+    // *text_dataWait* updates
+    if (t >= 0.0 && text_dataWait.status === PsychoJS.Status.NOT_STARTED) {
       // keep track of start time/frame for later
-      text_endMessage.tStart = t;  // (not accounting for frame time here)
-      text_endMessage.frameNStart = frameN;  // exact frame index
+      text_dataWait.tStart = t;  // (not accounting for frame time here)
+      text_dataWait.frameNStart = frameN;  // exact frame index
       
-      text_endMessage.setAutoDraw(true);
+      text_dataWait.setAutoDraw(true);
     }
     
     frameRemains = 0.0 + 5.0 - psychoJS.window.monitorFramePeriod * 0.75;  // most of one frame period left
-    if (text_endMessage.status === PsychoJS.Status.STARTED && t >= frameRemains) {
-      text_endMessage.setAutoDraw(false);
+    if (text_dataWait.status === PsychoJS.Status.STARTED && t >= frameRemains) {
+      text_dataWait.setAutoDraw(false);
+    }
+    
+    
+    // *text_redirectPrompt* updates
+    if (t >= 5.0 && text_redirectPrompt.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      text_redirectPrompt.tStart = t;  // (not accounting for frame time here)
+      text_redirectPrompt.frameNStart = frameN;  // exact frame index
+      
+      text_redirectPrompt.setAutoDraw(true);
+    }
+    
+    
+    // *button_redirectClick* updates
+    if (t >= 5.0 && button_redirectClick.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      button_redirectClick.tStart = t;  // (not accounting for frame time here)
+      button_redirectClick.frameNStart = frameN;  // exact frame index
+      
+      button_redirectClick.setAutoDraw(true);
+    }
+    
+    if (button_redirectClick.status === PsychoJS.Status.STARTED) {
+      // check whether button_redirectClick has been pressed
+      if (button_redirectClick.isClicked) {
+        if (!button_redirectClick.wasClicked) {
+          // store time of first click
+          button_redirectClick.timesOn.push(button_redirectClick.clock.getTime());
+          // store time clicked until
+          button_redirectClick.timesOff.push(button_redirectClick.clock.getTime());
+        } else {
+          // update time clicked until;
+          button_redirectClick.timesOff[button_redirectClick.timesOff.length - 1] = button_redirectClick.clock.getTime();
+        }
+        if (!button_redirectClick.wasClicked) {
+          window.location.href = "https://app.prolific.com/submissions/complete?cc=CPRPTY9P";
+        }
+        // if button_redirectClick is still clicked next frame, it is not a new click
+        button_redirectClick.wasClicked = true;
+      } else {
+        // if button_redirectClick is clicked next frame, it is a new click
+        button_redirectClick.wasClicked = false;
+      }
+    } else {
+      // keep clock at 0 if button_redirectClick hasn't started / has finished
+      button_redirectClick.clock.reset();
+      // if button_redirectClick is clicked next frame, it is a new click
+      button_redirectClick.wasClicked = false;
+    }
+    // check for quit (typically the Esc key)
+    if (psychoJS.experiment.experimentEnded || psychoJS.eventManager.getKeys({keyList:['escape']}).length > 0) {
+      return quitPsychoJS('The [Escape] key was pressed. Goodbye!', false);
+    }
+    
+    // check if the Routine should terminate
+    if (!continueRoutine) {  // a component has requested a forced-end of Routine
+      return Scheduler.Event.NEXT;
+    }
+    
+    continueRoutine = false;  // reverts to True if at least one component still running
+    click_redirectComponents.forEach( function(thisComponent) {
+      if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
+        continueRoutine = true;
+      }
+    });
+    
+    // refresh the screen if continuing
+    if (continueRoutine) {
+      return Scheduler.Event.FLIP_REPEAT;
+    } else {
+      return Scheduler.Event.NEXT;
+    }
+  };
+}
+
+
+function click_redirectRoutineEnd(snapshot) {
+  return async function () {
+    //--- Ending Routine 'click_redirect' ---
+    click_redirectComponents.forEach( function(thisComponent) {
+      if (typeof thisComponent.setAutoDraw === 'function') {
+        thisComponent.setAutoDraw(false);
+      }
+    });
+    psychoJS.experiment.addData('click_redirect.stopped', globalClock.getTime());
+    psychoJS.experiment.addData('button_redirectClick.numClicks', button_redirectClick.numClicks);
+    psychoJS.experiment.addData('button_redirectClick.timesOn', button_redirectClick.timesOn);
+    psychoJS.experiment.addData('button_redirectClick.timesOff', button_redirectClick.timesOff);
+    // the Routine "click_redirect" was not non-slip safe, so reset the non-slip timer
+    routineTimer.reset();
+    
+    // Routines running outside a loop should always advance the datafile row
+    if (currentLoop === psychoJS.experiment) {
+      psychoJS.experiment.nextEntry(snapshot);
+    }
+    return Scheduler.Event.NEXT;
+  }
+}
+
+
+var end_scrapComponents;
+function end_scrapRoutineBegin(snapshot) {
+  return async function () {
+    TrialHandler.fromSnapshot(snapshot); // ensure that .thisN vals are up to date
+    
+    //--- Prepare to start Routine 'end_scrap' ---
+    t = 0;
+    end_scrapClock.reset(); // clock
+    frameN = -1;
+    continueRoutine = true; // until we're told otherwise
+    // update component parameters for each repeat
+    psychoJS.experiment.addData('end_scrap.started', globalClock.getTime());
+    // keep track of which components have finished
+    end_scrapComponents = [];
+    end_scrapComponents.push(text_endScrap);
+    
+    end_scrapComponents.forEach( function(thisComponent) {
+      if ('status' in thisComponent)
+        thisComponent.status = PsychoJS.Status.NOT_STARTED;
+       });
+    return Scheduler.Event.NEXT;
+  }
+}
+
+
+function end_scrapRoutineEachFrame() {
+  return async function () {
+    //--- Loop for each frame of Routine 'end_scrap' ---
+    // get current time
+    t = end_scrapClock.getTime();
+    frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    // update/draw components on each frame
+    
+    // *text_endScrap* updates
+    if (t >= 0.0 && text_endScrap.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      text_endScrap.tStart = t;  // (not accounting for frame time here)
+      text_endScrap.frameNStart = frameN;  // exact frame index
+      
+      text_endScrap.setAutoDraw(true);
     }
     
     // check for quit (typically the Esc key)
@@ -6763,14 +7035,14 @@ function end_screenRoutineEachFrame() {
     }
     
     continueRoutine = false;  // reverts to True if at least one component still running
-    end_screenComponents.forEach( function(thisComponent) {
+    end_scrapComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent && thisComponent.status !== PsychoJS.Status.FINISHED) {
         continueRoutine = true;
       }
     });
     
     // refresh the screen if continuing
-    if (continueRoutine && routineTimer.getTime() > 0) {
+    if (continueRoutine) {
       return Scheduler.Event.FLIP_REPEAT;
     } else {
       return Scheduler.Event.NEXT;
@@ -6779,15 +7051,18 @@ function end_screenRoutineEachFrame() {
 }
 
 
-function end_screenRoutineEnd(snapshot) {
+function end_scrapRoutineEnd(snapshot) {
   return async function () {
-    //--- Ending Routine 'end_screen' ---
-    end_screenComponents.forEach( function(thisComponent) {
+    //--- Ending Routine 'end_scrap' ---
+    end_scrapComponents.forEach( function(thisComponent) {
       if (typeof thisComponent.setAutoDraw === 'function') {
         thisComponent.setAutoDraw(false);
       }
     });
-    psychoJS.experiment.addData('end_screen.stopped', globalClock.getTime());
+    psychoJS.experiment.addData('end_scrap.stopped', globalClock.getTime());
+    // the Routine "end_scrap" was not non-slip safe, so reset the non-slip timer
+    routineTimer.reset();
+    
     // Routines running outside a loop should always advance the datafile row
     if (currentLoop === psychoJS.experiment) {
       psychoJS.experiment.nextEntry(snapshot);

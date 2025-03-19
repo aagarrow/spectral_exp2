@@ -326,7 +326,7 @@ async function experimentInit() {
   async function fetchParticipantData() {
       try {
         // Step 1: Fetch participant number first
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzwQ_wDr0AP_ikZVfVKcRS5MEzLITrC177MQdgDPCsxH7B_4fM7o01JNw8oO9ix8uYfHw/exec');
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzdR77Xgj-Klcig_hARCNIsbaCP6KlODFFfuhEYzoH4PrFEmqb_05RWT8gKsdbYAoTAIw/exec');
         const data = await response.json();
     
         const participantN = data.participantN;

@@ -205,6 +205,7 @@ var correct_file;
 var huggins_trial_counter;
 var sound_huggins;
 var text_headphoneCheck;
+var text_clock;
 var headphone_choiceClock;
 var button_huggins_1;
 var button_huggins_2;
@@ -690,6 +691,18 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -2.0 
+  });
+  
+  text_clock = new visual.TextStim({
+    win: psychoJS.window,
+    name: 'text_clock',
+    text: '',
+    font: 'Arial',
+    units: undefined, 
+    pos: [0, 0], height: 0.05,  wrapWidth: undefined, ori: 0.0,
+    languageStyle: 'LTR',
+    color: new util.Color('white'),  opacity: undefined,
+    depth: -3.0 
   });
   
   // Initialize components for Routine "headphone_choice"
@@ -2632,6 +2645,7 @@ function headphone_checkRoutineBegin(snapshot) {
     headphone_checkComponents = [];
     headphone_checkComponents.push(sound_huggins);
     headphone_checkComponents.push(text_headphoneCheck);
+    headphone_checkComponents.push(text_clock);
     
     headphone_checkComponents.forEach( function(thisComponent) {
       if ('status' in thisComponent)
@@ -2649,7 +2663,12 @@ function headphone_checkRoutineEachFrame() {
     t = headphone_checkClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
     // update/draw components on each frame
-    if (t >= 0.1 && sound_huggins.status === PsychoJS.Status.NOT_STARTED) {
+    //if (t >= 0.1 && sound_huggins.status === PsychoJS.Status.NOT_STARTED) {
+    //    sound_huggins.play();
+    //    startTime = t;
+    //}
+    
+    if (t >= 3 && sound_huggins.status === PsychoJS.Status.NOT_STARTED) {
         sound_huggins.play();
         startTime = t;
     }
@@ -2673,12 +2692,31 @@ function headphone_checkRoutineEachFrame() {
     }
     
     // *text_headphoneCheck* updates
-    if (t >= 0.0 && text_headphoneCheck.status === PsychoJS.Status.NOT_STARTED) {
+    if (t >= 3.0 && text_headphoneCheck.status === PsychoJS.Status.NOT_STARTED) {
       // keep track of start time/frame for later
       text_headphoneCheck.tStart = t;  // (not accounting for frame time here)
       text_headphoneCheck.frameNStart = frameN;  // exact frame index
       
       text_headphoneCheck.setAutoDraw(true);
+    }
+    
+    
+    if (text_clock.status === PsychoJS.Status.STARTED){ // only update if being drawn
+      text_clock.setText((("The audio will play in " + Math.max(0, Math.round((3 - t)))) + " seconds"), false);
+    }
+    
+    // *text_clock* updates
+    if (t >= 0.0 && text_clock.status === PsychoJS.Status.NOT_STARTED) {
+      // keep track of start time/frame for later
+      text_clock.tStart = t;  // (not accounting for frame time here)
+      text_clock.frameNStart = frameN;  // exact frame index
+      
+      text_clock.setAutoDraw(true);
+    }
+    
+    frameRemains = 0.0 + 3.0 - psychoJS.window.monitorFramePeriod * 0.75;  // most of one frame period left
+    if (text_clock.status === PsychoJS.Status.STARTED && t >= frameRemains) {
+      text_clock.setAutoDraw(false);
     }
     
     // check for quit (typically the Esc key)

@@ -1,6 +1,6 @@
-﻿/************************************* 
- * Pilot_Online_Study_Non_Instr *
- *************************************/
+﻿/****************************** 
+ * Expt_1_Even_Harmonics *
+ ******************************/
 
 import { core, data, sound, util, visual, hardware } from './lib/psychojs-2024.1.5.js';
 const { PsychoJS } = core;
@@ -12,7 +12,7 @@ const { round } = util;
 
 
 // store info about the experiment session:
-let expName = 'pilot_online_study_non_instr';  // from the Builder filename that created this script
+let expName = 'expt_1_even_harmonics';  // from the Builder filename that created this script
 let expInfo = {
     '': '',
 };
